@@ -1,12 +1,9 @@
 import streamlit as st
 from utils import render_sidebar_nav
 
-# show your custom sidebar everywhere
 render_sidebar_nav()
+st.title("Page 3 — Quiz")
 
-st.title("Page 3 — Quiz")  # simplified title as you requested
-
-# 6 MCQs (no “C2 level / MBBS year 2” text)
 qs = [
     {
         "q": "In an indirect ELISA, which component directly generates the colorimetric signal?",
@@ -49,15 +46,13 @@ qs = [
     }
 ]
 
-# render questions
 answers = []
 for i, item in enumerate(qs, start=1):
     st.markdown(f"**Q{i}.** {item['q']}")
     choice = st.radio("", item["opts"], index=None, key=f"q{i}")
-    st.write("")  # spacing
+    st.write("")
     answers.append(choice)
 
-# grade on submit
 if st.button("Submit"):
     score = 0
     for i, item in enumerate(qs, start=1):
@@ -71,4 +66,4 @@ if st.button("Submit"):
                 st.warning(f"Q{i}: No answer selected. Correct: **{correct}**. {item['exp']}")
             else:
                 st.error(f"Q{i}: Incorrect ❌ — Correct: **{correct}**. {item['exp']}")
-    st.info(f"**Score: {score} / {len(qs)}  ({round(100*score/len(qs))}%)**")
+    st.info(f"**Score: {score} / {len(qs)} ({round(100*score/len(qs))}%)**")
