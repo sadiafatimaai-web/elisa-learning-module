@@ -6,20 +6,19 @@ from utils import calc_cutoff, classify_samples
 
 st.title("Page 2 — Simulation & Practice Calculation")
 
-st.markdown("""
-Use this mini-simulator to **visualize color intensity** and **calculate cut-off (COV)**.
-
-**Cut-off definition (example):**  
-\\[
-\\text{COV} = 2.1 \\times \\text{Average Negative OD}
-\\]
-""")
+# ✅ LaTeX fix: use st.latex (or see alt below)
+st.markdown("Use this mini-simulator to **visualize color intensity** and **calculate cut-off (COV)**.")
+st.markdown("**Cut-off definition (example):**")
+st.latex(r"\mathrm{COV} = 2.1 \times \text{Average Negative OD}")
 
 st.subheader("A) Visual color simulation")
 st.caption("Darker shade ≈ higher OD")
 
 # Choose format for contextual description
-fmt = st.selectbox("Choose ELISA format to simulate", ["Indirect (Ab detection)", "Sandwich (Ag detection)", "Direct (Ag detection)", "Competitive (Ag detection)"])
+fmt = st.selectbox(
+    "Choose ELISA format to simulate",
+    ["Indirect (Ab detection)", "Sandwich (Ag detection)", "Direct (Ag detection)", "Competitive (Ag detection)"]
+)
 
 colA, colB = st.columns(2)
 with colA:
