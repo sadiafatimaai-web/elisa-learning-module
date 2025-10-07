@@ -1,4 +1,5 @@
 pages/5_Glossary.py
+
 import streamlit as st
 import pandas as pd
 from utils import render_sidebar_nav
