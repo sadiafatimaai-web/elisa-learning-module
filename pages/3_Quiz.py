@@ -3,8 +3,11 @@ render_sidebar_nav()
 
 import streamlit as st
 
-st.title("Page 3 — Quiz (6 MCQs, C2 level)")
-st.caption("Target audience: MBBS Year 2")
+# pages/3_Quiz.py
+import streamlit as st
+
+st.title("Page 3 — Quiz")  # ← simplified title
+# (remove any caption like "C2 level / MBBS Year 2")
 
 qs = [
     {
