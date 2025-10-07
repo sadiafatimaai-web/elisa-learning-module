@@ -1,7 +1,9 @@
+
 # Home.py
 import streamlit as st
 from pathlib import Path
-from utils import render_sidebar_nav   # ← keep your custom sidebar
+from utils import render_sidebar_nav
+render_sidebar_nav()
 
 st.set_page_config(page_title="ELISA Learning Module", page_icon="🧪", layout="wide")
 render_sidebar_nav()
