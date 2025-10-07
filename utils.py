@@ -4,12 +4,12 @@ from typing import List, Tuple
 import streamlit as st
 
 def render_sidebar_nav():
-    # (Optional) extra safety: hide default nav via CSS if the config isn’t picked up
+import streamlit as st
+
+def render_sidebar_nav():
+    # Hide Streamlit's default multipage nav (in case your config wasn't picked up)
     st.markdown("""
-        <style>
-            /* hides Streamlit's auto page list if still visible */
-            section[data-testid="stSidebarNav"] { display: none !important; }
-        </style>
+        <style> section[data-testid="stSidebarNav"] { display: none !important; } </style>
     """, unsafe_allow_html=True)
 
     with st.sidebar:
@@ -17,8 +17,9 @@ def render_sidebar_nav():
         st.page_link("Home.py", label="Home", icon="🏠")
         st.page_link("pages/1_Types_and_Examples.py", label="Types & Examples")
         st.page_link("pages/2_Simulation_and_Calculation.py", label="Simulation & Calculation")
-        st.page_link("pages/3_Quiz.py", label="Quiz")
+        st.page_link("pages/3_Quiz.py", label="Quiz")  # ← cleaned label
         st.page_link("pages/4_Troubleshooting.py", label="Troubleshooting")
+        st.page_link("pages/5_Glossary.py", label="Glossary")  # ← new
 
 def calc_cutoff(df: pd.DataFrame, neg_wells: List[str], multiplier: float = 2.1) -> Tuple[float, float]:
     """Return (COV, average_neg). df has columns Well, OD."""
