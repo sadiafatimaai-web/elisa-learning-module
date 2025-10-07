@@ -1,11 +1,7 @@
+# Home.py
 import streamlit as st
 from pathlib import Path
-with st.sidebar:
-    st.page_link("Home.py", label="Home", icon="🏠")
-    st.page_link("pages/1_Types_and_Examples.py", label="Types & Examples")
-    st.page_link("pages/2_Simulation_and_Calculation.py", label="Simulation & Calculation")
-    st.page_link("pages/3_Quiz.py", label="Quiz")
-    st.page_link("pages/4_Troubleshooting.py", label="Troubleshooting")
+from utils import render_sidebar_nav   # ← keep your custom sidebar
 
 st.set_page_config(page_title="ELISA Learning Module", page_icon="🧪", layout="wide")
 render_sidebar_nav()
@@ -34,4 +30,3 @@ A specific **antibody–antigen** interaction is linked to an **enzyme–substra
 - Take a **quiz**
 - Troubleshoot common problems with **dos & don’ts**
 """)
-
