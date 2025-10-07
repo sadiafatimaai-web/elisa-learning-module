@@ -1,16 +1,9 @@
-from utils import render_sidebar_nav
-render_sidebar_nav()
-
-
 import streamlit as st
-import numpy as np
 import matplotlib.pyplot as plt
+from utils import render_sidebar_nav
 
+render_sidebar_nav()
 st.title("Page 4 — Troubleshooting & Dos / Don’ts")
-
-st.markdown("""
-Pick an issue to see likely causes and fixes. Then try the **mini-sim** to see how changes affect signal vs background.
-""")
 
 issue = st.selectbox("Observed issue", [
     "High background (negatives too high)",
@@ -26,24 +19,20 @@ if issue == "High background (negatives too high)":
 - Inadequate blocking
 - Secondary antibody too concentrated
 
-**Fixes (Dos)**
+**Fixes**
 - Increase wash cycles/volume and soak time
-- Use an appropriate blocking buffer (e.g., BSA/casein)
+- Use proper blocking buffer (BSA/casein)
 - Titrate secondary Ab to lower concentration
-
-**Don’ts**
-- Don’t shorten wash steps
-- Don’t skip blocking
 """)
 elif issue == "Low/no signal (positives too low)":
     st.markdown("""
 **Likely causes**
-- Primary Ab too dilute or wrong isotype
+- Primary Ab too dilute/wrong isotype
 - Expired substrate/enzyme
 - Antigen degraded or poor capture
 
 **Fixes**
-- Optimize primary/detection Ab concentrations
+- Optimize primary/detection Ab
 - Confirm enzyme/substrate integrity
 - Check storage and coating conditions
 """)
@@ -79,20 +68,18 @@ wash_cycles = st.slider("Wash cycles", 1, 8, 3)
 block_quality = st.selectbox("Blocking quality", ["Poor", "OK", "Good", "Excellent"], index=2)
 sec_ab_dil = st.slider("Secondary Ab dilution (1:x)", 1000, 20000, 5000, step=500)
 
-# simple toy model
 bg_base = 0.25
 sig_base = 1.5
-
 bg = bg_base * (0.8 ** wash_cycles)
 bg *= {"Poor":1.2, "OK":1.0, "Good":0.8, "Excellent":0.6}[block_quality]
-bg *= (5000/sec_ab_dil)  # more concentrated sec Ab = higher background
+bg *= (5000 / sec_ab_dil)
 
-sig = sig_base * (sec_ab_dil/5000)**(-0.15)  # too concentrated may increase nonspecific binding
-sig *= (1.0 + 0.05*wash_cycles)  # gentle bump with better washing
+sig = sig_base * (sec_ab_dil / 5000)**(-0.15)
+sig *= (1.0 + 0.05 * wash_cycles)
 
 fig, ax = plt.subplots(figsize=(5,3))
 ax.bar(["Signal (Pos)", "Background (Neg)"], [sig, bg])
-ax.set_ylim(0, max(sig,bg)*1.3)
+ax.set_ylim(0, max(sig, bg) * 1.3)
 ax.set_ylabel("Relative OD (a.u.)")
 st.pyplot(fig, use_container_width=True)
 
