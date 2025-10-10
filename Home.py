@@ -3,22 +3,23 @@ import streamlit as st
 from utils import render_sidebar_nav
 from io import BytesIO
 import qrcode
-from PIL import Image  # needed by qrcode
+from PIL import Image  # required by qrcode
+import base64
 
-# ---------- Page Config ----------
+# ---------- Page Config (set this before other st.* calls) ----------
 st.set_page_config(page_title="ELISA Learning Module — Home", layout="wide")
 
 # ---------- Sidebar ----------
 render_sidebar_nav()
 
-# ---------- Helper: small QR code ----------
+# ---------- Helper: small QR code (returns PNG bytes) ----------
 def make_qr_png_bytes(url: str, box_size: int = 3, border: int = 2) -> bytes:
     """Return PNG bytes for a compact QR code."""
     qr = qrcode.QRCode(
         version=None,
         error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=box_size,
-        border=border,
+        box_size=box_size,  # smaller number = smaller QR
+        border=border,      # quiet zone around the QR
     )
     qr.add_data(url)
     qr.make(fit=True)
@@ -27,15 +28,36 @@ def make_qr_png_bytes(url: str, box_size: int = 3, border: int = 2) -> bytes:
     img.save(buf, format="PNG")
     return buf.getvalue()
 
-# ---------- Header image ----------
+# ---------- Header image (no caption) ----------
 st.image(
     "https://upload.wikimedia.org/wikipedia/commons/0/0a/ELISA_plate.jpg",
     use_container_width=True,
 )
 
-# ---------- Title and credit ----------
-st.title("🏠 Enzyme-Linked Immunosorbent Assay (ELISA) Learning Module")
-st.markdown("**Developed by Dr. Sadia Fatima — October 2025**")
+# ---------- Title + Credit (left) and Clickable QR (right) ----------
+qr_url = "https://elisa-learning-module-cyauubipuyelpx7zacsfkz.streamlit.app/"
+qr_png = make_qr_png_bytes(qr_url, box_size=3, border=2)
+qr_b64 = base64.b64encode(qr_png).decode("utf-8")
+
+left, right = st.columns([4, 1], vertical_alignment="center")
+
+with left:
+    st.title("🏠 Enzyme-Linked Immunosorbent Assay (ELISA) Learning Module")
+    st.markdown("**Developed by Dr. Sadia Fatima — October 2025**")
+
+with right:
+    # Clickable QR image + small link text (opens in a new tab)
+    st.markdown(
+        f"""
+        <div style="text-align:right;">
+          <a href="{qr_url}" target="_blank" rel="noopener">
+            <img src="data:image/png;base64,{qr_b64}" width="110" alt="Open module QR"/>
+          </a>
+          <div style="font-size:0.85rem; color:#666;">{qr_url}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # ---------- Introduction ----------
 st.markdown("""
@@ -55,7 +77,7 @@ ELISA is valued for being:
 
 st.markdown("---")
 
-# ---------- How ELISA Works ----------
+# ---------- How ELISA Works (6-step cards) ----------
 st.markdown("## 🧪 How ELISA Works (Simplified)")
 
 card_css = """
@@ -119,13 +141,3 @@ st.markdown("""
 </div>
 <div class="legend">Legend: “More analyte → More color” means OD increases with concentration. In <b>Competitive</b>, signal is inverted.</div>
 """, unsafe_allow_html=True)
-
-st.markdown("---")
-
-# ---------- QR Code ----------
-qr_url = "https://elisa-learning-module-cyauubipuyelpx7zacsfkz.streamlit.app/"
-c1, c2, c3 = st.columns([1,2,1])
-with c2:
-    st.markdown("#### 📲 Open this module on your phone")
-    st.image(make_qr_png_bytes(qr_url, box_size=3, border=2), width=120)
-    st.caption(qr_url)
