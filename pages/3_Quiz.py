@@ -5,7 +5,7 @@ render_sidebar_nav()
 import streamlit as st
 from utils import render_sidebar_nav
 
-render_sidebar_nav()
+
 st.title("Page 3 — Quiz")
 
 qs = [
