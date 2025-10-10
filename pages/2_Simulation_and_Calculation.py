@@ -1,3 +1,7 @@
+from utils import render_sidebar_nav
+render_sidebar_nav()
+
+
 import streamlit as st
 import numpy as np
 import pandas as pd
