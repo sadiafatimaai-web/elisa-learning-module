@@ -156,17 +156,6 @@ def render_sidebar_nav():
 
         st.markdown("---")
         st.caption("Tip: Click any item above to switch pages.")
-import qrcode
-from io import BytesIO
-
-def render_sidebar_nav():
-    ...
-    st.markdown("### 📲 Quick Access")
-    qr_url = "https://elisa-learning-module-cyauubipuyelpx7zacsfkz.streamlit.app/"
-    qr_img = qrcode.make(qr_url)
-    buf = BytesIO()
-    qr_img.save(buf, format="PNG")
-    st.image(buf.getvalue(), caption="Scan to open", use_container_width=True)
 
 
 
