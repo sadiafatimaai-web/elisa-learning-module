@@ -88,4 +88,36 @@ def classify_samples(df: pd.DataFrame, cov: float, equivocal_margin: float = 0.1
     out["Status"] = out["OD"].apply(status)
     return out
 
+import streamlit as st
+
+def render_sidebar_nav():
+    """
+    Sidebar navigation menu for all pages.
+    Appears on every page when called at the top of the script.
+    """
+    with st.sidebar:
+        st.image(
+            "https://upload.wikimedia.org/wikipedia/commons/0/0a/ELISA_plate.jpg",
+            use_column_width=True,
+            caption="ELISA Learning Module"
+        )
+        st.title("🔬 ELISA Module")
+        st.markdown("Navigate between sections:")
+
+        pages = {
+            "🏠 Home": "Home",
+            "1️⃣ Types & Examples": "pages/1_Types_and_Examples.py",
+            "2️⃣ Simulation & Calculation": "pages/2_Simulation_and_Calculation.py",
+            "3️⃣ Quiz": "pages/3_Quiz.py",
+            "4️⃣ Troubleshooting": "pages/4_Troubleshooting.py",
+        }
+
+        for name, path in pages.items():
+            st.markdown(f"- {name}")
+
+        st.markdown("---")
+        st.info(
+            "💡 Tip: Use this sidebar to explore ELISA principles, run simulations, "
+            "practice calculations, and troubleshoot common lab issues."
+        )
 
