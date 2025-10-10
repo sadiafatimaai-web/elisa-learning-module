@@ -128,46 +128,36 @@ st.caption("Tip: “Inverse” means higher analyte gives **lower** signal (Comp
 # =========================================================
 # SECTION C — Clinical examples (compact cards)
 # =========================================================
+# --- Replace the whole SECTION C (Clinical examples) with this ---
 st.subheader("C) Clinical examples (fast orientation)")
 
-card_css = """
-<style>
-.examples-grid {display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
-.ex-card {border:1px solid #e8e8e8;border-radius:12px;padding:12px;background:#fff;}
-.ex-title {font-weight:700;margin-bottom:6px;}
-.ex-body {font-size:0.95rem;line-height:1.35rem;}
-.ex-img img {width:100%; border-radius:10px;}
-@media(max-width:1000px){.examples-grid{grid-template-columns:1fr;}}
-</style>
-"""
-st.markdown(card_css, unsafe_allow_html=True)
+col1, col2 = st.columns(2)
 
-st.markdown("""
-<div class="examples-grid">
-  <div class="ex-card">
-    <div class="ex-title">Pregnancy Test (hCG) — Lateral-Flow Immunoassay</div>
-    <div class="ex-img">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Pregnancy_test.jpg/640px-Pregnancy_test.jpg" alt="Pregnancy test"/>
-    </div>
-    <div class="ex-body">
-      <b>Format:</b> Sandwich principle (capture + detection antibodies).<br/>
-      <b>Why:</b> High specificity and sensitivity for the hCG hormone in urine; fast and portable.<br/>
-      <b>Teaching angle:</b> LFIA is a cousin of ELISA—same immunochemistry, different readout device.
-    </div>
-  </div>
-  <div class="ex-card">
-    <div class="ex-title">COVID-19 Rapid Antigen — Lateral-Flow</div>
-    <div class="ex-img">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/SARS-CoV-2_Rapid_Antigen_Test.jpg/640px-SARS-CoV-2_Rapid_Antigen_Test.jpg" alt="COVID antigen test"/>
-    </div>
-    <div class="ex-body">
-      <b>Format:</b> Sandwich detection of viral nucleocapsid antigen.<br/>
-      <b>Why:</b> Quick triage; detects active infection when antigen is present.<br/>
-      <b>Teaching angle:</b> Compare with lab ELISA: LFIA trades absolute quantitation for speed and convenience.
-    </div>
-  </div>
-</div>
-""", unsafe_allow_html=True)
+with col1:
+    st.markdown("### Pregnancy Test (hCG) — Lateral-Flow Immunoassay")
+    st.image(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Pregnancy_test.jpg/640px-Pregnancy_test.jpg",
+        use_container_width=True,
+        caption="Sandwich principle — capture + detection antibodies."
+    )
+    st.markdown("""
+    **Format:** Sandwich (capture + detection antibodies)  
+    **Why:** High specificity and sensitivity for hCG hormone in urine; fast and portable.  
+    **Teaching tip:** Lateral-flow tests use the same immunochemical principle as ELISA.
+    """)
+
+with col2:
+    st.markdown("### COVID-19 Rapid Antigen — Lateral-Flow")
+    st.image(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/SARS-CoV-2_Rapid_Antigen_Test.jpg/640px-SARS-CoV-2_Rapid_Antigen_Test.jpg",
+        use_container_width=True,
+        caption="Sandwich detection of viral nucleocapsid antigen."
+    )
+    st.markdown("""
+    **Format:** Sandwich (detects viral nucleocapsid antigen)  
+    **Why:** Quick triage; detects active infection when antigen is present.  
+    **Teaching tip:** Compare LFIA with lab ELISA—speed vs. quantification trade-off.
+    """)
 
 # =========================================================
 # SECTION D — ELISA vs LFIA (when to use which?)
