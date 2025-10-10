@@ -1,3 +1,7 @@
+from utils import render_sidebar_nav
+render_sidebar_nav()
+
+
 import streamlit as st
 from pathlib import Path
 from utils import render_sidebar_nav
