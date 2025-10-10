@@ -134,28 +134,29 @@ def classify_samples(df: pd.DataFrame, cov: float, equivocal_margin: float = 0.1
 import streamlit as st
 
 def render_sidebar_nav():
-    """
-    Sidebar header used on all pages.
-    We intentionally do NOT add our own page links here to avoid duplicating
-    Streamlit's built-in multipage navigation list.
-    """
+    """Clickable sidebar navigation for ALL pages."""
     with st.sidebar:
+        # Fix deprecation: use_container_width (not use_column_width)
         st.image(
             "https://upload.wikimedia.org/wikipedia/commons/0/0a/ELISA_plate.jpg",
-            use_column_width=True,
+            use_container_width=True,
             caption="ELISA Learning Module",
         )
+
         st.markdown("## 🔬 ELISA Module")
-        st.markdown(
-            "Use the page list below to navigate:\n"
-            "- 🧫 Types & Examples\n"
-            "- 📈 Simulation & Calculation\n"
-            "- ❓ Quiz\n"
-            "- 🛠️ Troubleshooting\n"
-            "- 📚 Glossary"
-        )
+        st.markdown("Navigate between sections:")
+
+        # 🔗 Real, clickable links (requires streamlit >= 1.25)
+        st.page_link("Home.py", label="🏠 Home")
+        st.page_link("pages/1_Types_and_Examples.py", label="🧫 Types & Examples")
+        st.page_link("pages/2_Simulation_and_Calculation.py", label="📈 Simulation & Calculation")
+        st.page_link("pages/3_Quiz.py", label="❓ Quiz")
+        st.page_link("pages/4_Troubleshooting.py", label="🛠️ Troubleshooting")
+        st.page_link("pages/5_Glossary.py", label="📚 Glossary")
+
         st.markdown("---")
-        st.caption("Tip: The page list below is Streamlit’s built-in navigation.")
+        st.caption("Tip: Click any item above to switch pages.")
+
 
 
        
