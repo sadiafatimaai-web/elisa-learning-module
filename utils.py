@@ -121,3 +121,28 @@ def render_sidebar_nav():
             "practice calculations, and troubleshoot common lab issues."
         )
 
+import streamlit as st
+
+def render_sidebar_nav():
+    """Clickable sidebar navigation for all pages."""
+    with st.sidebar:
+        # Header image (fix deprecation: use_container_width)
+        st.image(
+            "https://upload.wikimedia.org/wikipedia/commons/0/0a/ELISA_plate.jpg",
+            use_container_width=True,
+            caption="ELISA Learning Module",
+        )
+
+        st.markdown("## 🔬 ELISA Module")
+        st.markdown("Navigate between sections:")
+
+        # 🔗 Real, clickable links to pages
+        st.page_link("Home.py", label="🏠 Home")
+        st.page_link("pages/1_Types_and_Examples.py", label="1️⃣ Types & Examples")
+        st.page_link("pages/2_Simulation_and_Calculation.py", label="2️⃣ Simulation & Calculation")
+        st.page_link("pages/3_Quiz.py", label="3️⃣ Quiz")
+        st.page_link("pages/4_Troubleshooting.py", label="4️⃣ Troubleshooting")
+
+        st.markdown("---")
+        st.caption("Tip: these buttons switch pages instantly.")
+
