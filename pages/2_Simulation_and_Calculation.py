@@ -1,25 +1,24 @@
-from utils import render_sidebar_nav
-render_sidebar_nav()
-
-
 import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
 from utils import (
-    calc_cutoff, classify_samples, four_pl, fit_curve, invert_to_conc,
-    coeff_var, lod_loq
+    render_sidebar_nav,
+    four_pl, fit_curve, invert_to_conc,
+    coeff_var, lod_loq,
+    calc_cutoff, classify_samples
 )
 
+render_sidebar_nav()
 st.title("Page 2 — Simulation & Practice Calculation")
 
 st.markdown("""
 Use this simulator to **run a virtual ELISA**, build a **standard curve**, back-calculate **unknown concentrations**, and compute **CV / LOD / LOQ**.  
-You can still compute a **cut-off (COV)** using negative controls for qualitative interpretation.
+You can also practice a **cut-off (COV)**–based qualitative interpretation using negative controls.
 """)
 
-# -------- A) Data generation controls --------
+# ---------- A) Data generation controls ----------
 st.subheader("A) Generate a dataset")
 c1, c2, c3, c4 = st.columns(4)
 with c1:
@@ -67,11 +66,11 @@ else:
 seed = st.number_input("Random seed", 0, 9999, 42, step=1)
 rng = np.random.default_rng(seed)
 
-def make_concs(n, lo, hi, log=True):
-    return np.logspace(np.log10(lo), np.log10(hi), n) if log else np.linspace(lo, hi, n)
+def make_concs(n, lo, hi):
+    return np.logspace(np.log10(lo), np.log10(hi), n)
 
-# simulate mean OD for each concentration using chosen true model
-conc = make_concs(n_stds, conc_min, conc_max, log=True)
+# simulate mean OD per concentration
+conc = make_concs(n_stds, conc_min, conc_max)
 if true_model == "linear":
     true_mean = t_intercept + t_slope * conc
 elif true_model == "log":
@@ -79,7 +78,6 @@ elif true_model == "log":
 else:
     true_mean = four_pl(conc, t_bottom, t_top, t_ec50, t_hill)
 
-# add background and noise, then create replicates
 def make_reps(mean_vec, k):
     arr = []
     for m in mean_vec:
@@ -87,8 +85,10 @@ def make_reps(mean_vec, k):
         arr.append(base + rng.normal(0, well_noise, size=k))
     return np.array(arr)
 
-std_reps = make_reps(true_mean, reps)                    # standards matrix [levels x reps]
+std_reps = make_reps(true_mean, reps)
 blank_vals = blank_od + rng.normal(0, well_noise, size=reps)
+
+# positive control
 pos_conc = conc_max * 1.2
 if true_model == "linear":
     pos_mean = t_intercept + t_slope * pos_conc
@@ -98,7 +98,7 @@ else:
     pos_mean = four_pl(pos_conc, t_bottom, t_top, t_ec50, t_hill)
 pos_reps = (pos_mean + blank_od) + rng.normal(0, well_noise, size=reps)
 
-# two unknowns at random concentrations
+# unknowns
 unk_true = np.array([rng.uniform(conc_min, conc_max), rng.uniform(conc_min, conc_max)])
 if true_model == "linear":
     unk_mean = t_intercept + t_slope * unk_true
@@ -108,13 +108,13 @@ else:
     unk_mean = four_pl(unk_true, t_bottom, t_top, t_ec50, t_hill)
 unk_reps = np.vstack([(m + blank_od) + rng.normal(0, well_noise, size=reps) for m in unk_mean])
 
-# assemble tidy DataFrames
-std_rows = [{"type": "standard", "level": i+1, "conc": conc[i], "od": std_reps[i,j]}
+# tidy data
+std_rows = [{"type":"standard","level":i+1,"conc":conc[i],"od":std_reps[i,j]}
             for i in range(n_stds) for j in range(reps)]
 standards_df = pd.DataFrame(std_rows)
 blank_df = pd.DataFrame({"type":"blank","level":0,"conc":0.0,"od":blank_vals})
 pos_df = pd.DataFrame({"type":"positive","level":0,"conc":pos_conc,"od":pos_reps})
-unk_rows = [{"type": f"unknown_{u+1}", "level": 0, "conc": unk_true[u], "od": unk_reps[u, j]}
+unk_rows = [{"type":f"unknown_{u+1}","level":0,"conc":unk_true[u],"od":unk_reps[u,j]}
             for u in range(2) for j in range(reps)]
 unknowns_df = pd.DataFrame(unk_rows)
 
@@ -124,12 +124,12 @@ if blank_sub:
     for df in (standards_df, unknowns_df, pos_df):
         df["od"] = (df["od"] - mu_blank).clip(lower=0)
 
-# fit curve on mean of standards
+# fit curve on standard means
 std_means = standards_df.groupby("level", as_index=False).agg(conc=("conc","mean"), od=("od","mean"))
 params, yhat = fit_curve(std_means["conc"].values, std_means["od"].values, kind=fit_kind)
 residuals = std_means["od"].values - yhat
 
-# -------- B) Visualize curve & residuals --------
+# ---------- B) Curve & residuals ----------
 st.subheader("B) Standard curve & residuals")
 c1, c2 = st.columns([3,2], gap="large")
 
@@ -156,7 +156,7 @@ with c2:
     ax.set_title("Fit residuals")
     st.pyplot(fig, use_container_width=True)
 
-# -------- C) Replicate CVs --------
+# ---------- C) Replicate CVs ----------
 st.subheader("C) Replicate CVs")
 def cv_table(df, group_col):
     t = df.copy()
@@ -174,7 +174,7 @@ with col2:
     tmp = unknowns_df.copy(); tmp["group"] = tmp["type"]
     st.dataframe(cv_table(tmp, "group"), use_container_width=True)
 
-# -------- D) Back-calc unknowns + LOD/LOQ --------
+# ---------- D) Back-calc unknowns + LOD/LOQ ----------
 st.subheader("D) Back-calculate unknown concentrations")
 unknown_means = unknowns_df.groupby("type", as_index=False).agg(mean_od=("od","mean"))
 calc_conc = invert_to_conc(unknown_means["mean_od"].values, params)
@@ -194,14 +194,14 @@ d.metric("Fit model", params["kind"].upper())
 
 st.markdown("---")
 
-# -------- F) Your original COV practice (kept) --------
+# ---------- F) Practice — COV & qualitative classification ----------
 st.subheader("F) Practice — Cut-off (COV) & qualitative classification")
 
-# quick OD inputs (use means from current dataset as defaults)
+# Use current dataset means as defaults for the practice widget
 defaults = {
     "Blank": float(blank_df["od"].mean()),
-    "Neg 1": float((blank_df["od"].mean() if len(blank_df)>0 else blank_od)),  # simple placeholders
-    "Neg 2": float((blank_df["od"].mean() if len(blank_df)>0 else blank_od)),
+    "Neg 1": float(blank_df["od"].mean()),
+    "Neg 2": float(blank_df["od"].mean()),
     "Pos": float(pos_df["od"].mean()),
     "Patient A": float(unknowns_df[unknowns_df["type"]=="unknown_1"]["od"].mean()),
     "Patient B": float(unknowns_df[unknowns_df["type"]=="unknown_2"]["od"].mean()),
@@ -217,23 +217,27 @@ with colB:
     od_s1    = st.number_input("Patient A OD", 0.00, 3.00, defaults["Patient A"], 0.01)
     od_s2    = st.number_input("Patient B OD", 0.00, 3.00, defaults["Patient B"], 0.01)
 
-neg_ods = st.multiselect("Pick **negative controls**", ["Blank","Neg 1","Neg 2","Pos","Patient A","Patient B"], default=["Neg 1","Neg 2"])
+neg_ods = st.multiselect(
+    "Pick **negative controls**",
+    ["Blank","Neg 1","Neg 2","Pos","Patient A","Patient B"],
+    default=["Neg 1","Neg 2"]
+)
 multiplier = st.number_input("COV multiplier", 1.0, 5.0, 2.1, 0.1)
 
+# Build the exact DataFrame expected by COV helpers:
 df_cov = pd.DataFrame({
-    "Well":["Blank","Neg 1","Neg 2","Pos","Patient A","Patient B"],
-    "OD":[od_blank, od_neg1, od_neg2, od_pos, od_s1, od_s2]
+    "Well": ["Blank","Neg 1","Neg 2","Pos","Patient A","Patient B"],
+    "OD":   [od_blank, od_neg1, od_neg2, od_pos, od_s1, od_s2],
 })
 
-if len(neg_ods)==0:
+if len(neg_ods) == 0:
     st.warning("Pick at least one negative control.")
 else:
     cov, avg_neg = calc_cutoff(df_cov, neg_ods, multiplier)
-    st.metric("Average Negative OD", f"{avg_neg:.3f}")
-    st.metric("Cut-off (COV)", f"{cov:.3f}")
-    st.dataframe(classify_samples(df_cov, cov, equivocal_margin=0.10), use_container_width=True)
+    col1, col2 = st.columns(2)
+    col1.metric("Average Negative OD", f"{avg_neg:.3f}")
+    col2.metric("Cut-off (COV)", f"{cov:.3f}")
+    # Robust classify: auto-detects 'OD' column
+    results_cov = classify_samples(df_cov, cov, equivocal_margin=0.10)
+    st.dataframe(results_cov, use_container_width=True)
 
-
-    results = classify_samples(df, cov, equivocal_margin=0.10)
-    st.dataframe(results, use_container_width=True)
-    st.caption("Rule: Positive if OD > COV + 0.10; Negative if OD < COV − 0.10; else Equivocal.")
