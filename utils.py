@@ -158,7 +158,8 @@ def render_sidebar_nav():
         st.caption("Tip: Click any item above to switch pages.")
 
 
-            "with assistance from an AI coding/copilot (OpenAI)."
+
+       
         )
 
        
