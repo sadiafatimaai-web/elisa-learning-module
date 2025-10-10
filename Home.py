@@ -1,3 +1,4 @@
+
 from utils import render_sidebar_nav
 render_sidebar_nav()
 
@@ -32,3 +33,16 @@ A specific **antibody–antigen** interaction is linked to an **enzyme–substra
 - Troubleshoot common problems with **dos & don’ts**
         """
     )
+
+import streamlit as st
+import qrcode
+from io import BytesIO
+
+# Example: QR code linking to your module or resource
+qr_url = "https://elisa-learning-module-cyauubipuyelpx7zacsfkz.streamlit.app/"
+qr_img = qrcode.make(qr_url)
+
+# Convert to displayable format
+buf = BytesIO()
+qr_img.save(buf, format="PNG")
+st.image(buf.getvalue(), caption="📱 Scan to open this ELISA module", use_container_width=True)
