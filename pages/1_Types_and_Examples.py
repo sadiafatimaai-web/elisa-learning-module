@@ -6,7 +6,7 @@ import streamlit as st
 from pathlib import Path
 from utils import render_sidebar_nav
 
-render_sidebar_nav()
+
 st.title("Page 1 — Types of ELISA & Clinical Examples")
 
 st.markdown("### The Four Core Formats")
