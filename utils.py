@@ -128,25 +128,19 @@ def classify_samples(df: pd.DataFrame, cov: float, equivocal_margin: float = 0.1
     return out
 
 # =========================
-# Sidebar Navigation
+# Sidebar Navigation 
 # =========================
 
 import streamlit as st
 
 def render_sidebar_nav():
-    """Clickable sidebar navigation for ALL pages."""
+    """Sidebar navigation for all pages — clean version with footer credit."""
     with st.sidebar:
-        # Fix deprecation: use_container_width (not use_column_width)
-        st.image(
-            "https://upload.wikimedia.org/wikipedia/commons/0/0a/ELISA_plate.jpg",
-            use_container_width=True,
-            caption="ELISA Learning Module",
-        )
-
+        # --- Header title only (removed broken images) ---
         st.markdown("## 🔬 ELISA Module")
-        st.markdown("Navigate between sections:")
+        st.markdown("Use the links below to navigate:")
 
-        # 🔗 Real, clickable links (requires streamlit >= 1.25)
+        # --- Page links ---
         st.page_link("Home.py", label="🏠 Home")
         st.page_link("pages/1_Types_and_Examples.py", label="🧫 Types & Examples")
         st.page_link("pages/2_Simulation_and_Calculation.py", label="📈 Simulation & Calculation")
@@ -154,12 +148,10 @@ def render_sidebar_nav():
         st.page_link("pages/4_Troubleshooting.py", label="🛠️ Troubleshooting")
         st.page_link("pages/5_Glossary.py", label="📚 Glossary")
 
+        # --- Divider and footer credit ---
         st.markdown("---")
-        st.caption("Tip: Click any item above to switch pages.")
-
- st.markdown("---")
         st.caption(
             "Built with Streamlit. Content and code developed by **Dr. Sadia Fatima** "
             "with assistance from an AI coding/copilot (**OpenAI**)."
         )
-       
+
