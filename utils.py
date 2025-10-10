@@ -157,9 +157,7 @@ def render_sidebar_nav():
         st.markdown("---")
         st.caption("Tip: Click any item above to switch pages.")
 
-st.divider()
-        st.caption(
-            "Built with Streamlit. Content and code developed by Dr. Sadia Fatima "
+
             "with assistance from an AI coding/copilot (OpenAI)."
         )
 
