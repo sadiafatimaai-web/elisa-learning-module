@@ -158,8 +158,4 @@ def render_sidebar_nav():
         st.caption("Tip: Click any item above to switch pages.")
 
 
-
-       
-        )
-
        
