@@ -43,7 +43,7 @@ left, right = st.columns([4, 1], vertical_alignment="center")
 
 with left:
     st.title("🏠 Enzyme-Linked Immunosorbent Assay (ELISA) Learning Module")
-    st.markdown("**Developed by Dr. Sadia Fatima — October 2025**")
+    st.markdown("**Developed by Dr. Sadia Fatima**")
 
 with right:
     # Clickable QR image + small link text (opens in a new tab)
